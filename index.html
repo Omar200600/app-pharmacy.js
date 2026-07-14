@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المساعد الذكي</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        /* الجزء العلوي - الهيدر */
+        .chat-header {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .bot-avatar {
+            width: 45px;
+            height: 45px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        .status-info h2 {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #2ec4b6;
+            border-radius: 50%;
+            margin-left: 5px;
+        }
+        .status-text {
+            font-size: 12px;
+            color: #e0e0e0;
+        }
+        /* صندوق المحادثة */
+        .chat-container {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+        .message.bot {
+            background-color: white;
+            align-self: flex-start;
+            border-bottom-right-radius: 2px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            color: #333;
+        }
+        .message.user {
+            background-color: #2a5298;
+            color: white;
+            align-self: flex-end;
+            border-bottom-left-radius: 2px;
+        }
+        /* منطقة الإدخال السفلى */
+        .input-area {
+            background-color: white;
+            padding: 12px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            border-top: 1px solid #e0e0e0;
+        }
+        .input-area input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            outline: none;
+            font-size: 14px;
+            transition: border 0.2s;
+        }
+        .input-area input:focus {
+            border-color: #2a5298;
+        }
+        .input-area button {
+            background-color: #2a5298;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .input-area button:hover {
+            background-color: #1e3c72;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الجزء العلوي للبرنامج -->
+    <div class="chat-header">
+        <div class="bot-avatar">🤖</div>
+        <div class="status-info">
+            <h2 id="botName">المساعد الذكي</h2>
+            <div style="display: flex; align-items: center;">
+                <span class="status-dot"></span>
+                <span class="status-text">متصل الآن</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- صندوق عرض الرسائل -->
+    <div class="chat-container" id="chatContainer">
+        <div class="message bot" id="welcomeMessage">
+            مرحباً بك! أنا مساعدك الافتراضي الذكي، كيف يمكنني مساعدتك اليوم؟
+        </div>
+    </div>
+
+    <!-- منطقة الكتابة والإرسال -->
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="اكتب رسالتك هنا..." onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()">إرسال</button>
+    </div>
+
+    <script>
+        const chatContainer = document.getElementById('chatContainer');
+        const userInput = document.getElementById('userInput');
+
+        function appendMessage(text, sender) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message', sender);
+            msgDiv.innerText = text;
+            chatContainer.appendChild(msgDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function appendHtmlMessage(htmlContent, sender) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message', sender);
+            msgDiv.innerHTML = htmlContent;
+            chatContainer.appendChild(msgDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const text = userInput.value.trim();
+            if (text === '') return;
+
+            appendMessage(text, 'user');
+            userInput.value = '';
+
+            // استدعاء دالة الذكاء الاصطناعي الموجودة في ملف app.js المربوط
+            if (typeof getAIResponse === 'function') {
+                setTimeout(() => {
+                    getAIResponse(text);
+                }, 400);
+            }
+        }
+    </script>
+
+    <!-- السطر السحري والأخير: يستدعي ملف التحكم المتواجد معه في نفس المجلد -->
+    <script src="app.js"></script>
+
+</body>
+</html>
